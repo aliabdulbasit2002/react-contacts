@@ -11,10 +11,14 @@ function App() {
     setUsers(prevUsers => [...prevUsers, newUser]);
   }
 
+  const handleDeleteContact = (id) => {
+    setUsers(users.filter(user => user.id !== id))
+  }
+
   return (
     <div className="App">
       <ContactsForm handleAddUser={handleAddUser} />
-      <Contacts users={users} />
+      <Contacts users={users} onDelete={handleDeleteContact} />
     </div>
   )
 }
