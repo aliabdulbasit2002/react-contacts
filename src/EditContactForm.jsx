@@ -1,15 +1,16 @@
 import React, { Component } from 'react'
-import { v4 as uuid } from "uuid";
 
-export default class ContactsForm extends Component {
+export default class EditContactForm extends Component {
     constructor(props) {
         super(props);
 
         this.state = {
-            name: '',
-            phoneNumber: '',
-            location: ''
+            id: props.user.id,
+            name: props.user.name,
+            phoneNumber: props.user.phoneNumber,
+            location: props.user.location
         };
+
 
         this.handleChange = this.handleChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
@@ -23,17 +24,18 @@ export default class ContactsForm extends Component {
 
     handleSubmit(e) {
         e.preventDefault();
-        const newUser = {
-            name: this.state.name,
-            phoneNumber: this.state.phoneNumber,
-            location: this.state.location
-        };
-        this.props.handleAddUser(newUser);
-        this.setState({ name: '', phoneNumber: '', location: '', id: uuid() });
+        this.props.saveChanges(this.state.id, this.state)
+        this.setState({
+            name: '',
+            phoneNumber: '',
+            location: ''
+        });
     }
+
+
     render() {
         return (
-            <div>
+            <div className="modal">
                 <form onSubmit={this.handleSubmit}>
                     <h1>Class Form</h1>
                     <label>
@@ -51,7 +53,8 @@ export default class ContactsForm extends Component {
                         <input type="text" name="location" value={this.state.location} onChange={this.handleChange} />
                     </label>
                     <br />
-                    <button type="submit">Submit</button>
+                    <button onClick={this.props.saveChanges}>Save</button>
+                    <span className="close" onClick={this.props.modalClose}>&times;</span>
                 </form>
             </div>
         )

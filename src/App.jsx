@@ -15,10 +15,24 @@ function App() {
     setUsers(users.filter(user => user.id !== id))
   }
 
+  const saveChanges = (id, update) => {
+    setUsers(users.map((item) => {
+      if (item.id === id) {
+        return update
+      }
+      return item
+    }))
+
+  }
+
   return (
     <div className="App">
       <ContactsForm handleAddUser={handleAddUser} />
-      <Contacts users={users} onDelete={handleDeleteContact} />
+      <Contacts
+        users={users}
+        onDelete={handleDeleteContact}
+        saveChanges={saveChanges}
+      />
     </div>
   )
 }
