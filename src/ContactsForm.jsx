@@ -1,59 +1,73 @@
-import React, { Component } from 'react'
+import React, { useState } from "react";
+import { useDispatch } from "react-redux";
+import { addUser } from "./reducers/contactReducer";
+import {
+  Button,
+  FormControl,
+  FormLabel,
+  Heading,
+  Input,
+} from "@chakra-ui/react";
 import { v4 as uuid } from "uuid";
 
-export default class ContactsForm extends Component {
-    constructor(props) {
-        super(props);
+const ContactsForm = () => {
+  const [name, setName] = useState("");
+  const [phoneNumber, setPhoneNumber] = useState("");
+  const [location, setLocation] = useState("");
 
-        this.state = {
-            name: '',
-            phoneNumber: '',
-            location: ''
-        };
+  const dispatch = useDispatch();
 
-        this.handleChange = this.handleChange.bind(this);
-        this.handleSubmit = this.handleSubmit.bind(this);
-    }
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    const newUser = {
+      name: name,
+      phoneNumber: phoneNumber,
+      location: location,
+      id: uuid(),
+    };
+    dispatch(addUser(newUser));
+    setName("");
+    setPhoneNumber("");
+    setLocation("");
+  };
 
-    handleChange(e) {
-        const { name, value } = e.target;
-        this.setState({ [name]: value });
-    }
+  return (
+    <>
+      <form onSubmit={handleSubmit}>
+        <Heading>Functional Form</Heading>
+        <FormControl>
+          <FormLabel>Name </FormLabel>
+          <Input
+            type="text"
+            name="name"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+          />
+        </FormControl>
+        <FormControl>
+          <FormLabel>Phone </FormLabel>
+          <Input
+            type="number"
+            name="phoneNumber"
+            value={phoneNumber}
+            onChange={(e) => setPhoneNumber(e.target.value)}
+          />
+        </FormControl>
+        <FormControl>
+          <FormLabel>Location</FormLabel>
+          <Input
+            type="text"
+            name="location"
+            value={location}
+            onChange={(e) => setLocation(e.target.value)}
+          />
+        </FormControl>
+        <Button me="auto" mt={{ base: 6, md: 0 }} type="submit">
+          Submit
+        </Button>
+      </form>
+    </>
+  );
+};
 
-
-    handleSubmit(e) {
-        e.preventDefault();
-        const newUser = {
-            name: this.state.name,
-            phoneNumber: this.state.phoneNumber,
-            location: this.state.location
-        };
-        this.props.handleAddUser(newUser);
-        this.setState({ name: '', phoneNumber: '', location: '', id: uuid() });
-    }
-    render() {
-        return (
-            <div>
-                <form onSubmit={this.handleSubmit}>
-                    <h1>Class Form</h1>
-                    <label>
-                        Name:
-                        <input type="text" name="name" value={this.state.name} onChange={this.handleChange} />
-                    </label>
-                    <br />
-                    <label>
-                        Phone:
-                        <input type="number" name="phoneNumber" value={this.state.phoneNumber} onChange={this.handleChange} />
-                    </label>
-                    <br />
-                    <label>
-                        Location:
-                        <input type="text" name="location" value={this.state.location} onChange={this.handleChange} />
-                    </label>
-                    <br />
-                    <button type="submit">Submit</button>
-                </form>
-            </div>
-        )
-    }
-}
+export default ContactsForm;

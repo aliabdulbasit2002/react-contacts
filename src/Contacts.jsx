@@ -1,38 +1,43 @@
 import { useState } from "react";
 import EditContactForm from "./EditContactForm";
 import { v4 as uuid } from "uuid";
+import { Button, Flex, SimpleGrid } from "@chakra-ui/react";
+import { useSelector } from "react-redux";
 
-const Contacts = ({ users, onDelete, saveChanges }) => {
+const Contacts = ({ onDelete, saveChanges }) => {
+  const [showModal, setShowModal] = useState(false);
 
-    const [showModal, setShowModal] = useState(false);
+  const handleButtonClick = () => {
+    setShowModal(!showModal);
+  };
 
-    const handleButtonClick = () => {
-        setShowModal(!showModal);
-    }
+  const handleModalClose = () => {
+    setShowModal(!showModal);
+  };
 
-    const handleModalClose = () => {
-        setShowModal(!showModal);
-    }
+  const { contacts } = useSelector((state) => state.contacts);
 
-    return (
-        <div>
-            {users.map((user) => <div
-                key={user.id}
-                className="card">
-                <p>Name : {user.name}</p>
-                <p>Phone : {user.phoneNumber}</p>
-                <p>Location: {user.location}</p>
-                <button onClick={handleButtonClick}>edit</button>
-                <button onClick={() => onDelete(user.id)}>delete</button>
-                {showModal &&
-                    <EditContactForm
-                        modalClose={handleModalClose}
-                        saveChanges={saveChanges}
-                        user={user}
-                    />
-                }
-            </div>)}
+  return (
+    <SimpleGrid minChildWidth="14rem">
+      {contacts.map((contact) => (
+        <div key={contact.id} className="card">
+          <p>Name : {contact.name}</p>
+          <p>Phone : {contact.phoneNumber}</p>
+          <p>Location: {contact.location}</p>
+          <Flex gap={3}>
+            <Button onClick={handleButtonClick}>edit</Button>
+            <Button onClick={() => onDelete(contact.id)}>delete</Button>
+          </Flex>
+          {showModal && (
+            <EditContactForm
+              modalClose={handleModalClose}
+              saveChanges={saveChanges}
+              user={user}
+            />
+          )}
         </div>
-    )
-}
-export default Contacts
+      ))}
+    </SimpleGrid>
+  );
+};
+export default Contacts;
