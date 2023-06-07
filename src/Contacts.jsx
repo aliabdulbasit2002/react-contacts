@@ -1,41 +1,33 @@
-import { useState } from "react";
+import { Box, Button, Flex, SimpleGrid, Text } from "@chakra-ui/react";
+import { useDispatch, useSelector } from "react-redux";
+import { deleteUser } from "./reducers/contactReducer";
 import EditContactForm from "./EditContactForm";
-import { v4 as uuid } from "uuid";
-import { Button, Flex, SimpleGrid } from "@chakra-ui/react";
-import { useSelector } from "react-redux";
 
-const Contacts = ({ onDelete, saveChanges }) => {
-  const [showModal, setShowModal] = useState(false);
-
-  const handleButtonClick = () => {
-    setShowModal(!showModal);
-  };
-
-  const handleModalClose = () => {
-    setShowModal(!showModal);
-  };
-
+const Contacts = () => {
   const { contacts } = useSelector((state) => state.contacts);
+  const dispatch = useDispatch();
 
   return (
-    <SimpleGrid minChildWidth="14rem">
+    <SimpleGrid minChildWidth="14rem" gap={3}>
       {contacts.map((contact) => (
-        <div key={contact.id} className="card">
-          <p>Name : {contact.name}</p>
-          <p>Phone : {contact.phoneNumber}</p>
-          <p>Location: {contact.location}</p>
-          <Flex gap={3}>
-            <Button onClick={handleButtonClick}>edit</Button>
-            <Button onClick={() => onDelete(contact.id)}>delete</Button>
+        <Box
+          key={contact.id}
+          bg="telegram.400"
+          p={5}
+          borderRadius={10}
+          borderTop="10px solid"
+          borderTopColor="pink"
+        >
+          <Text>Name : {contact.name}</Text>
+          <Text>Phone : {contact.phoneNumber}</Text>
+          <Text>Location: {contact.location}</Text>
+          <Flex gap={3} mt={4}>
+            <EditContactForm contact={contact} />
+            <Button onClick={() => dispatch(deleteUser(contact.id))}>
+              delete
+            </Button>
           </Flex>
-          {showModal && (
-            <EditContactForm
-              modalClose={handleModalClose}
-              saveChanges={saveChanges}
-              user={user}
-            />
-          )}
-        </div>
+        </Box>
       ))}
     </SimpleGrid>
   );

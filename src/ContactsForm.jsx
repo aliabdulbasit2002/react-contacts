@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { useDispatch } from "react-redux";
 import { addUser } from "./reducers/contactReducer";
 import {
@@ -62,7 +62,7 @@ const ContactsForm = () => {
             onChange={(e) => setLocation(e.target.value)}
           />
         </FormControl>
-        <Button me="auto" mt={{ base: 6, md: 0 }} type="submit">
+        <Button mt={6} type="submit" colorScheme="telegram">
           Submit
         </Button>
       </form>

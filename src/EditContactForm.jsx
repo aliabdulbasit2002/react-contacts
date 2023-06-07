@@ -1,62 +1,83 @@
-import React, { Component } from 'react'
+import {
+  Button,
+  Modal,
+  ModalBody,
+  ModalCloseButton,
+  ModalContent,
+  ModalHeader,
+  ModalOverlay,
+  useDisclosure,
+  Heading,
+  FormControl,
+  FormLabel,
+  Input,
+} from "@chakra-ui/react";
+import { useState } from "react";
+import { useDispatch } from "react-redux";
+import { editUser } from "./reducers/contactReducer";
 
-export default class EditContactForm extends Component {
-    constructor(props) {
-        super(props);
+const EditContactForm = ({ contact }) => {
+  const { isOpen, onOpen, onClose } = useDisclosure();
+  const dispatch = useDispatch();
 
-        this.state = {
-            id: props.user.id,
-            name: props.user.name,
-            phoneNumber: props.user.phoneNumber,
-            location: props.user.location
-        };
+  const [name, setName] = useState(contact.name);
+  const [phoneNumber, setPhoneNumber] = useState(contact.phoneNumber);
+  const [location, setLocation] = useState(contact.location);
 
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    let updatedUser = { id: contact.id, name, phoneNumber, location };
+    dispatch(editUser({ id: contact.id, updatedUser }));
+    onClose();
+  };
+  return (
+    <>
+      <Button onClick={onOpen}>Edit</Button>
 
-        this.handleChange = this.handleChange.bind(this);
-        this.handleSubmit = this.handleSubmit.bind(this);
-    }
+      <Modal isOpen={isOpen} onClose={onClose}>
+        <ModalOverlay />
+        <ModalContent>
+          <ModalHeader>Edit User</ModalHeader>
+          <ModalCloseButton />
+          <ModalBody>
+            <form onSubmit={handleSubmit}>
+              <Heading>Functional Form</Heading>
+              <FormControl>
+                <FormLabel>Name </FormLabel>
+                <Input
+                  type="text"
+                  name="name"
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                />
+              </FormControl>
+              <FormControl>
+                <FormLabel>Phone </FormLabel>
+                <Input
+                  type="number"
+                  name="phoneNumber"
+                  value={phoneNumber}
+                  onChange={(e) => setPhoneNumber(e.target.value)}
+                />
+              </FormControl>
+              <FormControl>
+                <FormLabel>Location</FormLabel>
+                <Input
+                  type="text"
+                  name="location"
+                  value={location}
+                  onChange={(e) => setLocation(e.target.value)}
+                />
+              </FormControl>
+              <Button mt={6} type="submit" colorScheme="telegram">
+                Save
+              </Button>
+            </form>
+          </ModalBody>
+        </ModalContent>
+      </Modal>
+    </>
+  );
+};
 
-    handleChange(e) {
-        const { name, value } = e.target;
-        this.setState({ [name]: value });
-    }
-
-
-    handleSubmit(e) {
-        e.preventDefault();
-        this.props.saveChanges(this.state.id, this.state)
-        this.setState({
-            name: '',
-            phoneNumber: '',
-            location: ''
-        });
-    }
-
-
-    render() {
-        return (
-            <div className="modal">
-                <form onSubmit={this.handleSubmit}>
-                    <h1>Class Form</h1>
-                    <label>
-                        Name:
-                        <input type="text" name="name" value={this.state.name} onChange={this.handleChange} />
-                    </label>
-                    <br />
-                    <label>
-                        Phone:
-                        <input type="number" name="phoneNumber" value={this.state.phoneNumber} onChange={this.handleChange} />
-                    </label>
-                    <br />
-                    <label>
-                        Location:
-                        <input type="text" name="location" value={this.state.location} onChange={this.handleChange} />
-                    </label>
-                    <br />
-                    <button onClick={this.props.saveChanges}>Save</button>
-                    <span className="close" onClick={this.props.modalClose}>&times;</span>
-                </form>
-            </div>
-        )
-    }
-}
+export default EditContactForm;
